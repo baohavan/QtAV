@@ -65,6 +65,8 @@ PlayerWindow::PlayerWindow(QWidget *parent) : QWidget(parent)
 
 void PlayerWindow::openMedia()
 {
+    m_player->play("rtsp://admin:@192.168.1.33:554/onvif/media?profile=Profile2");
+    return;
     QString file = QFileDialog::getOpenFileName(0, tr("Open a video"));
     if (file.isEmpty())
         return;

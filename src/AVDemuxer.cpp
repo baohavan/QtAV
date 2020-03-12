@@ -484,7 +484,8 @@ bool AVDemuxer::readFrame()
         d->started = true;
         Q_EMIT started();
     }
-    if (d->stream != videoStream() && d->stream != audioStream() && d->stream != subtitleStream()) {
+//    if (d->stream != videoStream() && d->stream != audioStream() && d->stream != subtitleStream()) {
+    if (d->stream != videoStream() && d->stream != subtitleStream()) {
         //qWarning("[AVDemuxer] unknown stream index: %d", stream);
         av_packet_unref(&packet); //important!
         return false;
@@ -1064,6 +1065,7 @@ QList<int> AVDemuxer::subtitleStreams() const
 
 AVCodecContext* AVDemuxer::audioCodecContext(int stream) const
 {
+    return 0;
     if (stream < 0)
         return d->astream.avctx;
     if (stream > (int)d->format_ctx->nb_streams)

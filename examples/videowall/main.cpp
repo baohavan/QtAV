@@ -28,7 +28,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    int r = 3, c = 3;
+    int r = 4, c = 4;
     int idx = 0;
     if ((idx = a.arguments().indexOf(QLatin1String("-r"))) > 0)
         r = a.arguments().at(idx + 1).toInt();
@@ -60,5 +60,18 @@ int main(int argc, char *argv[])
     } else {
         wall.help();
     }
+
+    VideoWall wall2;
+    wall2.setVideoRendererTypeString(vo.toLower());
+    wall2.setRows(r);
+    wall2.setCols(c);
+    wall2.show();
+
+    VideoWall wall3;
+    wall3.setVideoRendererTypeString(vo.toLower());
+    wall3.setRows(r);
+    wall3.setCols(c);
+    wall3.show();
+
     return a.exec();
 }

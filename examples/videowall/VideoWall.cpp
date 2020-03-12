@@ -37,7 +37,7 @@ using namespace QtAV;
 const int kSyncInterval = 2000;
 
 VideoWall::VideoWall(QObject *parent) :
-    QObject(parent),r(3),c(3),view(0),menu(0)
+    QObject(parent),r(4),c(4),view(0),menu(0)
   , vid(QString::fromLatin1("qpainter"))
 {
     QtAV::Widgets::registerRenderers();
@@ -150,7 +150,18 @@ void VideoWall::show()
             renderer->widget()->move(j*w, i*h);
             AVPlayer *player = new AVPlayer;
             player->setRenderer(renderer);
+//            player->setBufferMode(QtAV::BufferPackets);
+//            player->setBufferValue(10);
+
             connect(player, SIGNAL(started()), SLOT(changeClockType()));
+            QVariantHash avFormat;
+            avFormat["rtsp_flags"] = "prefer_tcp";
+//            avFormat["fflags"] = "nobuffer";
+            avFormat["probesize"] = 5000000;
+//            avFormat["tune"] = "animation";
+            player->setOptionsForFormat(avFormat);
+            player->setAsyncLoad(true);
+
             players.append(player);
             if (view)
                 ((QGridLayout*)view->layout())->addWidget(renderer->widget(), i, j);
@@ -181,15 +192,52 @@ void VideoWall::stop()
 
 void VideoWall::openLocalFile()
 {
-    QString file = QFileDialog::getOpenFileName(0, tr("Open a video"));
-    if (file.isEmpty())
-        return;
+//    QString file = QFileDialog::getOpenFileName(0, tr("Open a video"));
+//    if (file.isEmpty())
+//        return;
     stop();
     clock->reset();
     clock->start();
     timer_id = startTimer(kSyncInterval);
+//    QStringList urls = { "rtsp://10.10.201.150:554/hsub",
+//                         "rtsp://10.10.201.152:554/hsub",
+//                         "rtsp://10.10.201.151:554/hsub",
+//                         "rtsp://10.10.201.153:554/hsub",
+//                         "rtsp://10.10.201.156:554/hsub",
+//                         "rtsp://10.10.201.158:554/hsub",
+//                         "rtsp://10.10.201.155:554/hsub",
+//                         "rtsp://10.10.201.157:554/hsub",
+//                         "rtsp://10.10.201.154:554/hsub",
+//                         "rtsp://10.10.201.159:554/hsub",
+//                         "rtsp://10.10.201.192:554/hsub",
+//                         "rtsp://10.10.201.199:554/hsub",
+//                         "rtsp://10.10.201.195:554/hsub",
+//                         "rtsp://10.10.201.194:554/hsub",
+//                         "rtsp://10.10.201.196:554/hsub",
+//                         "rtsp://10.10.201.197:554/hsub"};
+    QStringList urls = {
+        "rtsp://admin:@192.168.1.166:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.33:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.31:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.165:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.66:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.104:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.27:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.41:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.40:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.71:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.26:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.36:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.34:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.38:554/onvif/media?profile=Profile2",
+        "rtsp://admin:@192.168.1.42:554/onvif/media?profile=Profile2",
+         "rtsp://10.10.201.197:554/hsub",
+    };
+    int i = 0;
     foreach (AVPlayer* player, players) {
-        player->setFile(file); //TODO: load all players before play
+        player->setFile(urls[i++]); //TODO: load all players before play
+//        player->setFile("file://Users/baohv/test.mp4");
+//        player->setFile("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
         player->play();
     }
 }
@@ -203,10 +251,47 @@ void VideoWall::openUrl()
     clock->reset();
     clock->start();
     timer_id = startTimer(kSyncInterval);
-    foreach (AVPlayer* player, players) {
-        player->setFile(url);
-        player->play(); //TODO: load all players before play
-    }
+        QStringList urls = { "rtsp://10.10.201.150:554/hsub",
+                             "rtsp://10.10.201.152:554/hsub",
+                             "rtsp://10.10.201.151:554/hsub",
+                             "rtsp://10.10.201.153:554/hsub",
+                             "rtsp://10.10.201.156:554/hsub",
+                             "rtsp://10.10.201.158:554/hsub",
+                             "rtsp://10.10.201.155:554/hsub",
+                             "rtsp://10.10.201.157:554/hsub",
+                             "rtsp://10.10.201.154:554/hsub",
+                             "rtsp://10.10.201.159:554/hsub",
+                             "rtsp://10.10.201.192:554/hsub",
+                             "rtsp://10.10.201.199:554/hsub",
+                             "rtsp://10.10.201.195:554/hsub",
+                             "rtsp://10.10.201.194:554/hsub",
+                             "rtsp://10.10.201.196:554/hsub",
+                             "rtsp://10.10.201.197:554/hsub"};
+//        QStringList urls = {
+//            "rtsp://admin:@192.168.1.166:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.33:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.31:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.165:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.66:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.104:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.27:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.41:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.40:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.71:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.26:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.36:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.34:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.38:554/onvif/media?profile=Profile2",
+//            "rtsp://admin:@192.168.1.42:554/onvif/media?profile=Profile2",
+//             "rtsp://10.10.201.197:554/hsub",
+//        };
+        int i = 0;
+        foreach (AVPlayer* player, players) {
+            player->setFile(urls[i++]); //TODO: load all players before play
+    //        player->setFile("file://Users/baohv/test.mp4");
+    //        player->setFile("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
+            player->play();
+        }
 }
 
 void VideoWall::about()
@@ -402,5 +487,5 @@ void VideoWall::changeClockType()
 {
     AVPlayer* player = qobject_cast<AVPlayer*>(sender());
     player->masterClock()->setClockAuto(false);
-    player->masterClock()->setClockType(AVClock::ExternalClock);
+    player->masterClock()->setClockType(AVClock::VideoClock);
 }

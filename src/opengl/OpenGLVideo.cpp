@@ -118,14 +118,14 @@ void OpenGLVideoPrivate::updateGeometry(VideoShader* shader, const QRectF &t, co
         update_geo = true;
     }
     bool update_gr = false;
-    static QThreadStorage<bool> new_thread;
-    if (!new_thread.hasLocalData())
-        new_thread.setLocalData(true);
+//    static QThreadStorage<bool> new_thread;
+//    if (!new_thread.hasLocalData())
+//        new_thread.setLocalData(true);
     
-    update_gr = new_thread.localData();
+//    update_gr = new_thread.localData();
     if (!gr || update_gr) { // TODO: only update VAO, not the whole GeometryRenderer
         update_geo = true;
-        new_thread.setLocalData(false);
+//        new_thread.setLocalData(false);
         GeometryRenderer *r = new GeometryRenderer(); // local var is captured by lambda 
         gr = r;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && defined(Q_COMPILER_LAMBDA)
